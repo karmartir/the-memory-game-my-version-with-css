@@ -24,15 +24,19 @@ function App() {
     const [cards, setCards] = useState(initialCards);
     const [history, setHistory] = useState([]);
     const [block, setBlock] = useState(false);
+    const[winner, setWinner]= useState(false);
 
     const handleNewGame = () => {
+        setRandomPlace()
         setCards((prevCards) =>
             prevCards.map((card) => ({
                 ...card,
                 isOpen: false,
             }))
         );
+
     };
+
 
     const handleButtonClick = (cardId, image) => {
         if (!block) {
@@ -84,11 +88,21 @@ function App() {
             setTimeout(() => {
                 checkMoves()
                 setBlock(false)
-            }, 1000)
+            }, 800)
         } else {
             setBlock(false)
         }
     }, [history])
+
+    const checkWinner = () => {
+        const win = cards.every(element => element.isOpen)
+        setWinner(win)
+    }
+
+useEffect(() => {
+  if(history.length >=12) {checkWinner()}
+}, [history])
+
 
 
     return (
@@ -101,7 +115,14 @@ function App() {
             <div style={{marginTop: '40px'}}>
                 <Board cards={cards} onButtonClick={handleButtonClick}/>
             </div>
+
+        <div>
+            <h5 className="heading-animation" style={{color: 'purple'}}>
+                {winner &&  `Congratulations, you won in ${history.length / 2} moves!!!`}
+            </h5>
         </div>
+        </div>
+
     );
 }
 
